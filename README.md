@@ -1,1 +1,1 @@
-"# Threejs-Imported-Models" 
+This repo is just practice using imported models to be used within three.js. The shapes and objects within three.js are fairly limited and to create a unique shape is much harder than importing a shape or object from other libraries. Some of those libraries have additional features like animations within their models. By the end, I imported a fox and added one of its animations to continuously render.
