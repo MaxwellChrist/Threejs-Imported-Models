@@ -21,7 +21,7 @@ const scene = new THREE.Scene()
  * Models
  */
 
-// gltf folder
+// Duck gltf folder
 // const gltfLoader = new GLTFLoader()
 // gltfLoader.load(
 //     './models/Duck/glTF/Duck.gltf',
@@ -39,28 +39,49 @@ const scene = new THREE.Scene()
 //     }
 // )
 
-// draco folder (same as above but much lighter)
-const dracoLoader = new DRACOLoader()
-dracoLoader.setDecoderPath('/draco/')
+// Duck draco folder (same as above but much lighter)
+// const dracoLoader = new DRACOLoader()
+// dracoLoader.setDecoderPath('/draco/')
 
+// const gltfLoader = new GLTFLoader()
+// gltfLoader.setDRACOLoader(dracoLoader)
+
+// gltfLoader.load(
+//     './models/Duck/glTF-Draco/Duck.gltf',
+//     (gltf) => {
+//         const children = [...gltf.scene.children]
+//         for(const child of children) {
+//             scene.add(child)
+//         }
+//     },
+//     () => {
+//         console.log('progress')
+//     },
+//     () => {
+//         console.log('failure')
+//     }
+// )
+
+// Fox gltf folder (rest of it is inside tick function)
 const gltfLoader = new GLTFLoader()
-gltfLoader.setDRACOLoader(dracoLoader)
+let mixer = null
+    gltfLoader.load(
+        './models/Fox/glTF/Fox.gltf',
+        (gltf) => {
+            gltf.scene.scale.set(0.025, 0.025, 0.025)
+            scene.add(gltf.scene)
 
-gltfLoader.load(
-    './models/Duck/glTF-Draco/Duck.gltf',
-    (gltf) => {
-        const children = [...gltf.scene.children]
-        for(const child of children) {
-            scene.add(child)
+            mixer = new THREE.AnimationMixer(gltf.scene)
+            const action = mixer.clipAction(gltf.animations[0])
+            action.play()
+        },
+        () => {
+            console.log('progress')
+        },
+        () => {
+            console.log('failure')
         }
-    },
-    () => {
-        console.log('progress')
-    },
-    () => {
-        console.log('failure')
-    }
-)
+    )
 
 /**
  * Floor
@@ -152,6 +173,11 @@ const tick = () =>
     const elapsedTime = clock.getElapsedTime()
     const deltaTime = elapsedTime - previousTime
     previousTime = elapsedTime
+
+    // Update mixer
+    if (mixer !== null) {
+        mixer.update(deltaTime)
+    }
 
     // Update controls
     controls.update()
