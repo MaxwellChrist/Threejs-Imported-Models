@@ -2,6 +2,8 @@ import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'lil-gui'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader'
 
 /**
  * Base
@@ -14,6 +16,51 @@ const canvas = document.querySelector('canvas.webgl')
 
 // Scene
 const scene = new THREE.Scene()
+
+/**
+ * Models
+ */
+
+// gltf folder
+// const gltfLoader = new GLTFLoader()
+// gltfLoader.load(
+//     './models/Duck/glTF/Duck.gltf',
+//     (gltf) => {
+//         const children = [...gltf.scene.children]
+//         for(const child of children) {
+//             scene.add(child)
+//         }
+//     },
+//     () => {
+//         console.log('progress')
+//     },
+//     () => {
+//         console.log('failure')
+//     }
+// )
+
+// draco folder (same as above but much lighter)
+const dracoLoader = new DRACOLoader()
+dracoLoader.setDecoderPath('/draco/')
+
+const gltfLoader = new GLTFLoader()
+gltfLoader.setDRACOLoader(dracoLoader)
+
+gltfLoader.load(
+    './models/Duck/glTF-Draco/Duck.gltf',
+    (gltf) => {
+        const children = [...gltf.scene.children]
+        for(const child of children) {
+            scene.add(child)
+        }
+    },
+    () => {
+        console.log('progress')
+    },
+    () => {
+        console.log('failure')
+    }
+)
 
 /**
  * Floor
